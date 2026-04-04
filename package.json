@@ -9,6 +9,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@amazon-connect/app": "^1.0.11",
+    "@amazon-connect/contact": "^1.0.11",
+    "@amazon-connect/voice": "^1.0.11",
+    "@azure/msal-browser": "^5.2.0",
+    "@azure/msal-react": "^5.0.4",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fontsource/roboto": "^5.2.10",
+    "@mui/icons-material": "^7.3.8",
+    "@mui/material": "^7.3.9",
+    "@mui/x-data-grid": "^8.0.0",
+    "@mui/x-data-grid-pro": "^8.28.0",
+    "@mui/x-date-pickers": "^8.27.2",
+    "dayjs": "^1.11.19",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
