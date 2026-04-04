@@ -5,7 +5,7 @@ import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./authConfig.ts";
 
 import App from "./App.tsx";
-import "bootstrap/dist/css/bootstrap.min.css";
+//import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import { LicenseInfo } from '@mui/x-license';
 
