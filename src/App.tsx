@@ -114,7 +114,7 @@ function App() {
         <>
           <SearchBox region={region} entraAuth={!isIframe}  onSearchResultChange={setSearchResult} />
           <Divider sx={{ my: 0.5, border: "1px solid", borderColor: "primary.dark" }} />
-          {searchResult && (<SearchResultsView searchResult={searchResult} userName={userName}  entraAuth={!isIframe}  />)}
+          {searchResult && (<SearchResultsView searchResult={searchResult} userName={userName}  />)}
         </>
       )}
     </PageLayout>

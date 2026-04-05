@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState  } from "react";
 import { apiRequest } from "../authConfig";
 import { DateRangeSelector } from "./DateRangeSelector";
-import { VMCategory } from "./VMCategory";
 import { Box, Stack, Typography, Button } from "@mui/material";
 import { useAcquireTokenWithRecovery } from "../hooks/useAcquireTokenWithRecovery";
 
@@ -17,7 +16,6 @@ interface SearchBoxProps
 
 export const SearchBox: React.FC<SearchBoxProps> = ({ region, entraAuth, onSearchResultChange }) => {
 
-  const [vmCategory, setVMCategory] = useState<string>("ALL");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [searchFailed, setSearchFailed] = useState<boolean>(false);
@@ -33,9 +31,9 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ region, entraAuth, onSearc
     let apiUrl;
 
     if(entraAuth)
-      apiUrl = `${API_ENDPOINT_ENTRA_AUTH}?function_code=fetch_voice_messages&vmx3_region=${vmCategory}&start_date=${startDate}&end_date=${endDate}`;
+      apiUrl = `${API_ENDPOINT_ENTRA_AUTH}?function_code=fetch_voice_messages&region=${region}&start_date=${startDate}&end_date=${endDate}`;
     else
-      apiUrl = `${API_ENDPOINT_CONNECT_AUTH}?function_code=fetch_voice_messages&vmx3_region=${vmCategory}&start_date=${startDate}&end_date=${endDate}`;
+      apiUrl = `${API_ENDPOINT_CONNECT_AUTH}?function_code=fetch_voice_messages&region=${region}&start_date=${startDate}&end_date=${endDate}`;
     
     console.log("apiUrl: " + apiUrl)
     let accessToken: string = "none";
@@ -85,12 +83,6 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ region, entraAuth, onSearc
     }
   };
 
-  useEffect(() => {
-    if (region) {
-      setVMCategory(region);
-    }
-  }, [region]);
-
   return (
     <Box 
       sx={{ 
@@ -113,11 +105,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ region, entraAuth, onSearc
           onEndDateChange={(val) => setEndDate(val)} 
         />
         
-        {( region === "ALL" || region == "") && (<VMCategory 
-            vmCategory={vmCategory} 
-            onVMCategoryChange={(val) => setVMCategory(val)} 
-          />)
-        }
+       
        
       </Stack>
 

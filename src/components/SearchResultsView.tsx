@@ -30,17 +30,16 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PhoneIcon from '@mui/icons-material/Phone';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+
 import { useAcquireTokenWithRecovery } from "../hooks/useAcquireTokenWithRecovery";
 
 // --- API Endpoints ---
 const API_ENDPOINT_ENTRA_AUTH = import.meta.env.VITE_API_URL_ENTRA_AUTH;
-const API_ENDPOINT_CONNECT_AUTH = import.meta.env.VITE_API_URL_CONNECT_AUTH;
 const isIframe = window.self !== window.top;
 
 // --- Interfaces ---
 interface SearchResultsViewProps {
   searchResult: string | null;
-  entraAuth: boolean;
   userName: string | null | undefined;
 }
 
@@ -178,7 +177,7 @@ const NoRowsOverlay = () => (
 
 // --- Main Component ---
 
-export const SearchResultsView: React.FC<SearchResultsViewProps> = ({ searchResult, userName, entraAuth }) => {
+export const SearchResultsView: React.FC<SearchResultsViewProps> = ({ searchResult, userName  }) => {
   const acquireTokenWithRecovery = useAcquireTokenWithRecovery();
   const playingAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -206,7 +205,6 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({ searchResu
           vmx3_queue_name: (details.vmx3_target === "agent" && details.vmx3_preferred_agent?.toLowerCase() === userName?.toLowerCase()) 
             ? "Self" : (details.vmx3_queue_name === 'VMX3_VM_QUEUE' ? 'Self' : details.vmx3_queue_name)
         }));
-        
     } catch (e) { console.log(e);return []; }
   }, [searchResult, userName, readMessages, deletedFileNames]);
 
@@ -224,38 +222,32 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({ searchResu
 
   const handleMarkAsRead = useCallback(async (contactId: string, fileName: string) => {
     setReadMessages(prev => new Set(prev).add(contactId));
-    const apiUrl = entraAuth
-      ? `${API_ENDPOINT_ENTRA_AUTH}?function_code=mark_voice_message_read&vmx3_file_name=${fileName}`
-      : `${API_ENDPOINT_CONNECT_AUTH}?function_code=mark_voice_message_read&vmx3_file_name=${fileName}`;
+    const apiUrl =  `${API_ENDPOINT_ENTRA_AUTH}?function_code=mark_voice_message_read&vmx3_file_name=${fileName}`;
     try {
       let token = "None";
-      if (entraAuth) {
-        const authResult = await acquireTokenWithRecovery({ ...apiRequest });
-        if (authResult?.accessToken) token = authResult.accessToken;
-      }
+      const authResult = await acquireTokenWithRecovery({ ...apiRequest });
+      if (authResult?.accessToken) token = authResult.accessToken;
+
       await fetch(apiUrl, { headers: { Authorization: `Bearer ${token}` } });
     } catch (error) { console.error("Mark read error:", error); }
-  }, [entraAuth, acquireTokenWithRecovery]);
+  }, [acquireTokenWithRecovery]);
 
   const confirmDelete = useCallback(async () => {
     if (!itemToDelete) return;
     setIsDeleting(true);
-    const apiUrl = entraAuth 
-      ? `${API_ENDPOINT_ENTRA_AUTH}?function_code=delete_voice_message&vmx3_file_name=${itemToDelete.fileName}`
-      : `${API_ENDPOINT_CONNECT_AUTH}?function_code=delete_voice_message&vmx3_file_name=${itemToDelete.fileName}`;
+    const apiUrl =  `${API_ENDPOINT_ENTRA_AUTH}?function_code=delete_voice_message&vmx3_file_name=${itemToDelete.fileName}`;
     try {
       let token = "None";
-      if (entraAuth) {
-        const authResult = await acquireTokenWithRecovery({ ...apiRequest });
-        if (authResult?.accessToken) token = authResult.accessToken;
-      }
+      const authResult = await acquireTokenWithRecovery({ ...apiRequest });
+      if (authResult?.accessToken) token = authResult.accessToken;
+
       const resp = await fetch(apiUrl, { headers: { Authorization: `Bearer ${token}` } });
       if (resp.ok) {
         setDeletedFileNames(prev => new Set(prev).add(itemToDelete.fileName));
         setDeleteDialogOpen(false);
       }
     } catch (e) { console.error("Delete error:", e); } finally { setIsDeleting(false); }
-  }, [itemToDelete, entraAuth, acquireTokenWithRecovery]);
+  }, [itemToDelete, acquireTokenWithRecovery]);
 
   const columns = useMemo<GridColDef<GridRow>[]>(() => {
     const baseColumns: GridColDef<GridRow>[] = [
@@ -277,11 +269,8 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({ searchResu
             <audio controls src={params.value as string} onPlay={handleAudioPlay} onEnded={() => handleMarkAsRead(params.row.id, params.row.fileName)} style={{ height: '24px', width: '250px' }} />
           </Box>
       )},
-      { field: 'transcript', filterable: false, sortable: false, headerName: 'Transcript', headerAlign:'center', width: 120, align: 'center', getApplyQuickFilterFn: () => null,renderCell: () => (
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            
-          </Box>
-      )},
+      { field: 'transcript', filterable: false, sortable: false, headerName: 'Transcript', headerAlign:'center', width: 120, align: 'center', getApplyQuickFilterFn: () => null
+      },
       { field: 'dial_action', headerName: 'Call back', sortable: false, width: 90, align: 'center', getApplyQuickFilterFn: () => null, renderCell: () => (
           <IconButton color="primary" ><PhoneIcon /></IconButton>
       )},
@@ -290,7 +279,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({ searchResu
       ) : null }
     ];
     return baseColumns.filter(col => isIframe || col.field !== 'dial_action');
-  }, [handleAudioPlay, handleMarkAsRead]);
+  }, [ handleAudioPlay, handleMarkAsRead]);
 
   if (!searchResult) return <Box sx={{ p: 5, textAlign: 'center' }}>No search performed.</Box>;
 
