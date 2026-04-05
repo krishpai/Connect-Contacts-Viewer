@@ -277,15 +277,15 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({ searchResu
             <audio controls src={params.value as string} onPlay={handleAudioPlay} onEnded={() => handleMarkAsRead(params.row.id, params.row.fileName)} style={{ height: '24px', width: '250px' }} />
           </Box>
       )},
-      { field: 'transcript', filterable: false, sortable: false, headerName: 'Transcript', headerAlign:'center', width: 120, align: 'center', getApplyQuickFilterFn: () => null,renderCell: (params) => (
+      { field: 'transcript', filterable: false, sortable: false, headerName: 'Transcript', headerAlign:'center', width: 120, align: 'center', getApplyQuickFilterFn: () => null,renderCell: () => (
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             
           </Box>
       )},
-      { field: 'dial_action', headerName: 'Call back', sortable: false, width: 90, align: 'center', getApplyQuickFilterFn: () => null, renderCell: (params) => (
+      { field: 'dial_action', headerName: 'Call back', sortable: false, width: 90, align: 'center', getApplyQuickFilterFn: () => null, renderCell: () => (
           <IconButton color="primary" ><PhoneIcon /></IconButton>
       )},
-      { field: 'delete_action', filterable: false, sortable: false, headerName: '', width: 90, align: 'center', getApplyQuickFilterFn: () => null, renderCell: (params) => (vmx3Admin === 'Y' || params.row.vmx3_queue_name === 'Self') ? (
+      { field: 'delete_action', filterable: false, sortable: false, headerName: '', width: 90, align: 'center', getApplyQuickFilterFn: () => null, renderCell: (params) => (params.row.vmx3_queue_name === 'Self') ? (
           <IconButton onClick={() => { setItemToDelete({ id: params.row.id, fileName: params.row.fileName }); setDeleteDialogOpen(true); }}><DeleteIcon /></IconButton>
       ) : null }
     ];
