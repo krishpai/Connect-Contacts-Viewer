@@ -8,7 +8,7 @@ interface PageLayoutProps {
   children?: React.ReactNode;
 }
 
-const COMPANY_NAME = import.meta.env.VITE_API_SCOPE;
+const COMPANY_NAME = import.meta.env.VITE_COMPANY_NAME;
 
 export const PageLayout: React.FC<PageLayoutProps> = ({ userName, region, children }) => {
   return (
