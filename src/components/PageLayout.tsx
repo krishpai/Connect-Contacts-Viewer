@@ -8,10 +8,12 @@ interface PageLayoutProps {
   children?: React.ReactNode;
 }
 
+const COMPANY_NAME = import.meta.env.VITE_API_SCOPE;
+
 export const PageLayout: React.FC<PageLayoutProps> = ({ userName, region, children }) => {
   return (
     <>
-      <Navbar userName={userName} region={region} companyName="Veradium" />
+      <Navbar userName={userName} region={region} companyName={COMPANY_NAME} />
 
       {/* 1. Add top margin to account for the fixed navbar height */}
       <Box
